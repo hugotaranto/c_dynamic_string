@@ -1,0 +1,6 @@
+*.a
+build
+*.json
+*.dSYM
+test/test_dynamic_string
+.cache

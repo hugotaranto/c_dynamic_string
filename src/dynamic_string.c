@@ -16,15 +16,15 @@ DynamicString* dstring_initialise_size(size_t size) {
   // initialise the variables
   string->length = 0;
   string->size = size;
-  // allocate the data
-  string->data = malloc(sizeof(char) * size);
+  // allocate the data -- with 1 extra spot for the null character
+  string->data = malloc(sizeof(char) * size + 1);
 
   if(!string->data) {
     return NULL;
   }
 
   // set all to null characters
-  memset(string->data, '\0', sizeof(char) * string->size);
+  memset(string->data, '\0', sizeof(char) * (string->size + 1));
 
   return string;
 }
@@ -33,6 +33,29 @@ void dstring_free(DynamicString *dstring) {
   // free the data
   free(dstring->data);
   free(dstring);
+}
+
+int dstring_resize(DynamicString *dstring, size_t new_size) {
+  // this resizes the dynamic string making sure that there is an extra space for the '\0' character
+  if(!dstring) {
+    return -1;
+  }
+  if(new_size < 0) {
+    return -1;
+  }
+  dstring->data = realloc(dstring->data, sizeof(char) * (new_size + 1));
+  if(!dstring->data) {
+    return -1;
+  }
+  dstring->size = new_size;
+  if(dstring->length > dstring->size) {
+    dstring->length = dstring->size;
+  }
+
+  // set all of the new data to null
+  memset(&dstring->data[dstring->length], '\0', sizeof(char) * (dstring->size - dstring->length + 1));
+
+  return 0;
 }
 
 int dstring_readline(DynamicString *dstring, FILE *stream) {
@@ -62,18 +85,77 @@ int dstring_append(DynamicString *dstring, char ch) {
   
   // if they are the same we need to increase the size
   if(dstring->size <= dstring->length) {
-    dstring->size = dstring->size * 2;
-    dstring->data = realloc(dstring->data, sizeof(char) * dstring->size);
-    // set all the new characters to null
-    memset(&dstring->data[dstring->length], '\0', sizeof(char) * (dstring->size - dstring->length));
-    if(!dstring->data) {
+    if(dstring_resize(dstring, dstring->size * 2)) {
       return -1;
     }
-
   }
 
   // then we can append the element
   dstring->data[dstring->length++] = ch;
+
+  return 0;
+}
+
+int dstring_combine(DynamicString *dest, DynamicString *src) {
+  
+  if(!dest || !src) {
+    return -1;
+  }
+
+  // make sure the destination has enough space
+  size_t total_size = dest->length + src->length;
+  if(dest->size < total_size) {
+    // if it isn't the size must be increased
+    if(dstring_resize(dest, total_size)) {
+      return -1;
+    }
+  }
+
+  // then the data can be copied in
+  memcpy(&dest->data[dest->length], src->data, sizeof(char) * src->length);
+  dest->length = total_size;
+
+  return 0;
+}
+
+int dstring_combine_simple(DynamicString *dest, const char *src) {
+
+  if(!dest || !src) {
+    return - 1;
+  }
+
+  int i = 0;
+  while(src[i] != '\0') {
+    if (dstring_append(dest, src[i])) {
+      return -1;
+    }
+    i++;
+  }
+
+  return 0;
+}
+
+int dstring_combine_nsimple(DynamicString *dest, const char *src, size_t size) {
+  if(!dest || !src) {
+    return -1;
+  }
+
+  if(size <= 0) {
+    return -1;
+  }
+
+  // make sure the destination has enough space
+  size_t total_size = dest->length + size;
+  if(dest->size < total_size) {
+    // if it isn't the size must be increased
+    if(dstring_resize(dest, total_size)) {
+      return -1;
+    }
+  }
+
+  // then the data can be copied in
+  memcpy(&dest->data[dest->length], src, sizeof(char) * total_size);
+  dest->length = total_size;
 
   return 0;
 }

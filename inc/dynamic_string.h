@@ -19,8 +19,17 @@ DynamicString* dstring_initialise();
 DynamicString* dstring_initialise_size(size_t size);
 void dstring_free(DynamicString *dstring);
 
+int dstring_resize(DynamicString *dstring, size_t new_size);
+
 int dstring_readline(DynamicString *dstring, FILE *stream);
 
 int dstring_append(DynamicString *dstring, char ch);
+
+int dstring_combine(DynamicString *dest, DynamicString *src);
+
+// src must be a char array ending in a '\0' -- null terminated
+int dstring_combine_simple(DynamicString *dest, const char *src);
+
+int dstring_combine_nsimple(DynamicString *dest, const char *src, size_t size);
 
 #endif

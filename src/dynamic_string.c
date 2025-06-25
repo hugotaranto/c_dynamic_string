@@ -215,4 +215,22 @@ DynamicString* dstring_to_upper(DynamicString *src) {
   return out;
 }
 
+int dstring_contains_file_extension(DynamicString *dstring) {
+  if(!dstring) {
+    return 0;
+  }
+
+  int dot_found = 0;
+  // travers through the data, checking for a . after the last /
+  for(size_t i = 0; i < dstring->length; i++) {
+    char ch = dstring->data[i];
+    if(ch == '/') {
+      dot_found = 0;
+    } else if(ch == '.') {
+      dot_found = 1;
+    }
+  }
+
+  return dot_found;
+}
 

@@ -37,4 +37,7 @@ int dstring_combine_nsimple(DynamicString *dest, const char *src, size_t size);
 DynamicString* dstring_to_lower(DynamicString *src);
 DynamicString* dstring_to_upper(DynamicString *src);
 
+// returns 1 if there is a file extension
+int dstring_contains_file_extension(DynamicString *dstring);
+
 #endif

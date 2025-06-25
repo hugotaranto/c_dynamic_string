@@ -45,16 +45,37 @@
 // }
 //
 
+// int main() {
+//   DynamicString *string = dstring_initialise_size(5);
+//   dstring_readline(string, stdin);
+//
+//   DynamicString *lower = dstring_to_lower(string);
+//   DynamicString *upper = dstring_to_upper(string);
+//
+//   printf("Before: %s\n Lower: %s\n Upper: %s\n", string->data, lower->data, upper->data);
+//
+//   dstring_free(string);
+//   dstring_free(lower);
+//   dstring_free(upper);
+// }
+
 int main() {
-  DynamicString *string = dstring_initialise_size(5);
-  dstring_readline(string, stdin);
+  DynamicString *string = dstring_initialise_size(10);
+  while(1) {
+    dstring_readline(string, stdin);
 
-  DynamicString *lower = dstring_to_lower(string);
-  DynamicString *upper = dstring_to_upper(string);
+    if(strncmp(string->data, "exit", string->length) == 0) {
+      break;
+    } 
 
-  printf("Before: %s\n Lower: %s\n Upper: %s\n", string->data, lower->data, upper->data);
+    int result = dstring_contains_file_extension(string);
+    if(result) {
+      printf("Yes Extension\n");
+    } else {
+      printf("No Extension\n");
+    }
+  }
+
 
   dstring_free(string);
-  dstring_free(lower);
-  dstring_free(upper);
 }

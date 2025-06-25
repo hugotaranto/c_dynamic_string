@@ -31,9 +31,11 @@ DynamicString* dstring_initialise_size(size_t size) {
 }
 
 void dstring_free(DynamicString *dstring) {
-  // free the data
-  free(dstring->data);
-  free(dstring);
+  if(dstring) {
+    // free the data
+    free(dstring->data);
+    free(dstring);
+  }
 }
 
 void dstring_clear(DynamicString *dstring) {
@@ -77,10 +79,27 @@ int dstring_readline(DynamicString *dstring, FILE *stream) {
   // reset the string to be empty
   dstring_clear(dstring);
 
-  // read in characters until end of file or \n
+  // strip the whitespace off the start of the stream
   int ch;
-  while ((ch = fgetc(stream)) != EOF && ch != '\n') {
+  int started = 0;
+  // read in characters until end of file or \n
+  while ((ch = fgetc(stream)) != EOF) {
+
+    if(!started) {
+      // strip the whitespace off the start
+      if(!isspace(ch)) {
+        started = 1;
+      } else {
+        continue;
+      }
+    }
+
     char character = (char)ch;
+    // check for the end of line
+    if(character == '\n') {
+      break;
+    }
+
     if(dstring_append(dstring, character)) {
       return -2;
     }

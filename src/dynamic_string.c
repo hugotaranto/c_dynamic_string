@@ -1,4 +1,5 @@
 #include "dynamic_string.h"
+#include <ctype.h>
 
 DynamicString* dstring_initialise() {
   return dstring_initialise_size(DYNAMIC_STRING_INIT);
@@ -166,6 +167,52 @@ int dstring_combine_nsimple(DynamicString *dest, const char *src, size_t size) {
   dest->length = total_size;
 
   return 0;
+}
+
+DynamicString* dstring_to_lower(DynamicString *src) {
+
+  if(!src) {
+    return NULL;
+  }
+  // create the output string
+  DynamicString *out = dstring_initialise_size(src->length);
+
+  if(!out) {
+    return NULL;
+  }
+
+  // loop through all of the data
+  for(size_t i = 0; i < src->length; i++) {
+    out->data[i] = tolower(src->data[i]);
+  }
+
+  out->length = src->length;
+  out->size = src->size;
+
+  return out;
+}
+
+
+DynamicString* dstring_to_upper(DynamicString *src) {
+  if(!src) {
+    return NULL;
+  }
+  // create the output string
+  DynamicString *out = dstring_initialise_size(src->length);
+
+  if(!out) {
+    return NULL;
+  }
+
+  // just copy the data directly in, we don't have to use slow append
+  for(size_t i = 0; i < src->length; i++) {
+    out->data[i] = toupper(src->data[i]);
+  }
+
+  out->length = src->length;
+  out->size = src->length;
+
+  return out;
 }
 
 

@@ -28,19 +28,33 @@
 //   dstring_free(string);
 // }
 
+// int main() {
+//   DynamicString *string = dstring_initialise_size(5);
+//   dstring_readline(string, stdin);
+//   printf("Size: %lu, Length: %lu, String: %s\n",string->size, string->length, string->data);
+//
+//   DynamicString *string2 = dstring_initialise_size(6);
+//   dstring_readline(string2, stdin);
+//   printf("Size: %lu, Length: %lu, String: %s\n",string2->size, string2->length, string2->data);
+//
+//   dstring_combine(string2, string);
+//   printf("Size: %lu, Length: %lu, String: %s\n",string2->size, string2->length, string2->data);
+//
+//   dstring_free(string2);
+//   dstring_free(string);
+// }
+//
+
 int main() {
   DynamicString *string = dstring_initialise_size(5);
   dstring_readline(string, stdin);
-  printf("Size: %lu, Length: %lu, String: %s\n",string->size, string->length, string->data);
 
-  DynamicString *string2 = dstring_initialise_size(6);
-  dstring_readline(string2, stdin);
-  printf("Size: %lu, Length: %lu, String: %s\n",string2->size, string2->length, string2->data);
+  DynamicString *lower = dstring_to_lower(string);
+  DynamicString *upper = dstring_to_upper(string);
 
-  dstring_combine(string2, string);
-  printf("Size: %lu, Length: %lu, String: %s\n",string2->size, string2->length, string2->data);
+  printf("Before: %s\n Lower: %s\n Upper: %s\n", string->data, lower->data, upper->data);
 
-  dstring_free(string2);
   dstring_free(string);
+  dstring_free(lower);
+  dstring_free(upper);
 }
-

@@ -34,5 +34,7 @@ int dstring_combine_simple(DynamicString *dest, const char *src);
 
 int dstring_combine_nsimple(DynamicString *dest, const char *src, size_t size);
 
+DynamicString* dstring_to_lower(DynamicString *src);
+DynamicString* dstring_to_upper(DynamicString *src);
 
 #endif

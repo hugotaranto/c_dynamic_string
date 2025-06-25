@@ -35,6 +35,11 @@ void dstring_free(DynamicString *dstring) {
   free(dstring);
 }
 
+void dstring_clear(DynamicString *dstring) {
+  dstring->length = 0;
+  memset(dstring->data, '\0', sizeof(char) * (dstring->size + 1));
+}
+
 int dstring_resize(DynamicString *dstring, size_t new_size) {
   // this resizes the dynamic string making sure that there is an extra space for the '\0' character
   if(!dstring) {
@@ -67,6 +72,9 @@ int dstring_readline(DynamicString *dstring, FILE *stream) {
   if (!stream) {
     return -2;
   }
+
+  // reset the string to be empty
+  dstring_clear(dstring);
 
   // read in characters until end of file or \n
   int ch;
